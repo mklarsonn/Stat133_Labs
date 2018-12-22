@@ -1,0 +1,341 @@
+---
+title: "lab07-mk-larson"
+author: "mklarson"
+date: "October 11, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, fig.path = 'lab07-images/')
+```
+
+```{r}
+#' @title f
+#' @description calculates the square of a number
+#' @param x variable(numeric)
+#' @return numeric
+f <- function(x = 1){
+  return(x * x)
+}
+
+#' @title g
+#' @description calculates 2 times x plus 5
+#' @param x variable(numeric)
+#' @return numeric
+g <- function(x = 1){
+  return((2*x) + 5)
+}
+
+
+
+```
+
+```{r}
+#' @title fog
+#' @description calculates the square of whatever number g(x) produces
+#' @param x variable(numeric)
+#' @return numeric
+fog <- function(x = 1){
+  return (g(x) * g(x))
+}
+
+fog(2)
+fog(-5)
+
+#' @title gof
+#' @description calculates 2 times the square of x plus 5
+#' @param x variable(numeric)
+#' @return numeric 
+gof <- function(x = 1) {
+  return ((2 * f(x)) + 5)
+}
+gof(0)
+gof(-5/2)
+
+```
+
+```{r}
+#' @title pythagoras
+#' @description calculates the length of the hypotenus
+#' @param a variable(numeric)
+#' @param b variable(numeric) 
+#' @return numeric
+pythagoras <- function(a = 1, b = a){
+  c <- sqrt((a*a) + (b*b))
+  
+  return (c)
+}
+pythagoras(5)
+
+```
+
+```{r}
+#' @title circle_area
+#' @description calculates the area of a circle
+#' @param radius variable(numeric)
+#' @return numeric
+circle_area <- function(radius = 1){
+  if (radius < 0) {
+    stop("radius cannot be negative")
+  }
+  area <-  pi * (radius^2)
+  return (area)
+}
+circle_area()
+circle_area(radius = 3)
+
+```
+
+```{r}
+#' @title cyclinder_area
+#' @description calculates the surface area of a cylinder
+#' @param radius variable(numeric)
+#' @param height variable(numeric)
+#' @return numeric
+cylinder_area <- function(radius = 1, height = 1){
+  if (radius < 0) {
+    stop("radius cannot be negative")
+  }
+  if (height < 0){
+    stop("height cannot be negative")
+  }
+  sa <-  (2 * pi * radius * height) + (2 * circle_area(radius))
+  return (sa)
+}
+cylinder_area(radius = 2, height = 3)
+
+```
+
+```{r}
+#' @title cylinder_volume
+#' @description calculates the volume of a cylinder
+#' @param radius variable(numeric)
+#' @param height variable(numeric)
+#' @return numeric
+cylinder_volume <- function(radius = 1, height = 1){
+  if (radius < 0) {
+    stop("radius cannot be negative")
+  }
+  if (height < 0){
+    stop("height cannot be negative")
+  }
+  vol <-  circle_area(radius) * height
+  return (vol)
+}
+cylinder_volume(radius = 3, height = 10)
+```
+
+```{r}
+#' @title miles2kms
+#' @description converts miles into kilometer
+#' @param mls variable(numeric)
+#' @return numeric
+miles2kms <- function(mls = 1){
+  kilos <- mls * 1.6
+  return (kilos)
+}
+
+miles <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+kms <- miles2kms(miles)
+milestokilos <- data.frame(miles, kms)
+```
+
+
+```{r}
+#' @title gallons2liters
+#' @description converts gallons into liters
+#' @param gals1 variable(numeric)
+#' @return numeric
+gallons2liters <- function(gals1 = 1){
+  lits1 <- gals1 * 3.78541
+  return (lits1)
+}
+#' @title liters2gallons
+#' @description converts liters into gallons
+#' @param lits2 variable(numeric)
+#' @return numeric
+liters2gallons <- function(lits2 = 1){
+  gals2 <- lits2 / 3.78541
+  return (gals2)
+}
+
+liters2gallons(2)
+2/3.78541
+
+
+liters <- c(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
+gallons <- liters2gallons(liters)
+liters_to_gallons <- data.frame(liters, gallons)
+```
+
+```{r}
+#' @title seconds2years
+#' @description converts seconds into years
+#' @param secs variable(numeric)
+#' @return numeric
+seconds2years <- function(secs = 1){
+  yrs <- secs / 31540000
+  return (yrs)
+}
+seconds2years(1000000000) #a newborn baby can indeed expect to live for one billion seconds, beause that is only 31 years
+```
+
+```{r}
+poly1 <- function(x) {
+  (x^2) * (x - 1)
+}
+# set of points
+x <- seq(-4, 4, length.out = 20)
+y <- poly1(x)
+
+# graph polynomial
+plot(x, y, type = 'l', lwd = 3, col = "#FB7215", las = 1)
+abline(h = 0, v = 0, col = '#888888aa', lwd = 1.5)
+title(main = expression(paste(f(x), ' = ', x^2, (x - 1))))
+
+```
+
+```{r}
+poly2 <- function(x){
+  x^3
+}
+# set of points
+x <- seq(-4, 4, length.out = 20)
+y <- poly2(x)
+# graph polynomial
+plot(x, y, type = 'l', lwd = 3, col = "#FB7215", las = 1)
+abline(h = 0, v = 0, col = '#888888aa', lwd = 1.5)
+title(main = expression(paste(f(x), ' = ', x^3)))
+```
+
+```{r}
+poly3 <- function(x){
+  ((x^2)-1) * ((x+3)^3)
+}
+# set of points
+x <- seq(-4, 4, length.out = 20)
+y <- poly3(x)
+# graph polynomial
+plot(x, y, type = 'l', lwd = 3, col = "#FB7215", las = 1)
+abline(h = 0, v = 0, col = '#888888aa', lwd = 1.5)
+title(main = expression(paste(f(x), ' = ', ((x^2)-1) * ((x+3)^3))))
+```
+
+```{r}
+poly4 <- function(x){
+  ((x^2) -1)* ((x^2)-9)
+}
+# set of points
+x <- seq(-4, 4, length.out = 20)
+y <- poly4(x)
+# graph polynomial
+plot(x, y, type = 'l', lwd = 3, col = "#FB7215", las = 1)
+abline(h = 0, v = 0, col = '#888888aa', lwd = 1.5)
+title(main = expression(paste(f(x), ' = ', ((x^2) -1)* ((x^2)-9))))
+```
+
+```{r}
+z <- 100*pi
+# Fill in the following if-else statements. You may (or may not) 
+# have to add or subtract else if or else statements.
+if (z < 0) { # Replace TRUE with a condition.
+  z = 0
+} else if (z > 100) { # Replace TRUE with a condition.
+  z = 100
+} else {
+  z
+}
+```
+
+```{r}
+is_even <- function(y){
+  if (y %% 2 == 0){
+    print ("True")
+  }
+  else{
+    print ("False")
+  }
+}
+is_even(10)
+is_even(11)
+```
+
+```{r}
+is_odd <- function(y){
+  if (y %% 2 != 0){
+    print ("True")
+  }
+  else{
+    print ("False")
+  }
+}
+is_odd(12)
+is_odd(13)
+```
+
+```{r}
+#' @title grade
+#' @description converts numbers into letter grade
+#' @param score variable(numeric)
+#' @return character
+grade <- function(score)
+  if (score <= 100 & score >= 90){
+     grade = "A"
+     return (grade)
+  } else if (score < 90 & score >= 80){
+    grade = "B"
+    return (grade)
+  } else if (score < 80 & score >= 70){
+    grade = "C"
+    return (grade)
+  } else if (score < 70 & score >= 60){
+    grade = "D"
+    return (grade)
+  } else if (score < 60 ) {
+    grade = "F"
+    return (grade)
+  }
+
+grade(45)
+grade(82)
+grade(94)
+
+```
+
+```{r}
+miles2inches <- function(x=1){
+  inch <- x *63360
+  return (inch)
+}
+
+miles2feet <- function(x=1){
+  ft <- x * 5280
+  return (ft)
+}
+miles2yards <- function(x=1){
+  yrds <- x * 1760
+  return (yrds)
+}
+miles2meters <- function(x=1){
+  mts <- x/.00062137
+  return (mts)
+}
+miles2kms <- function(x=1){
+  kms <- x/.62137
+  return (kms)
+}
+miles2inches(2)
+miles2feet(2)
+miles2yards(2)
+miles2meters(2)
+miles2kms(2)
+```
+
+```{r}
+convert <- function(x, to = "km") {
+  switch(to, "km" = miles2kms(x), "in" = miles2inches(x),"ft" = miles2feet(x), "yd" = miles2yards(x), "m" = miles2meters(x))
+}
+switch(3, "ft")
+switch(3, "yd")
+```
+

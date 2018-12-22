@@ -1,0 +1,142 @@
+---
+title: "Lab02-MK-Larson"
+author: "mklarson"
+date: "September 6, 2018"
+output: html_document
+---
+```{r}
+load('nba2017-salary-points.RData')
+```
+* From the environment I can see that all the objects have the same length
+* Using the any(is.na()) function I checked all of the objects, and there are no missing values
+* You can distinguish if an object is a vector by whether or not its object by calling is.vector()
+**The object "team" is not a vector
+* You can determine the data type of a certain object by calliing typeof()
+
+```{r}
+typeof(experience)
+typeof(player)
+typeof(points1)
+typeof(points2)
+typeof(points3)
+typeof(position)
+typeof(salary)
+typeof(scored)
+typeof(team)
+is.vector(age)
+is.vector(experience)
+is.vector(player)
+is.vector(points1)
+is.vector(points2)
+is.vector(points3)
+is.vector(position)
+is.vector(salary)
+is.vector(scored)
+is.vector(team)
+any(is.na(age))
+any(is.na(experience))
+any(is.na(four))
+any(is.na(player))
+any(is.na(points1))
+any(is.na(points2))
+any(is.na(points3))
+any(is.na(position))
+any(is.na(salary))
+any(is.na(scored))
+any(is.na(team))
+```
+```{r}
+four <- head(player, n = 4)
+four[1]
+four[0]
+four[-1]
+four[-c(1,2,3)]
+four[5]
+four[c(1,2,2,3,3,3)]
+```
+```{r}
+player[seq(2, length(player), by=2)]
+```
+```{r}
+salary[seq(1, length(player), by=2)]
+```
+
+```{r}
+team[seq(5, length(player), by=5)]
+```
+
+```{r}
+scored[seq(10, length(player), by=10)]
+```
+
+```{r}
+team[seq(440, 2, by=-2)]
+```
+
+```{r}
+player[team == 'GSW' & position == 'C']
+
+
+```
+
+```{r}
+player[team == 'GSW' | team == 'LAL']
+```
+
+```{r}
+player[team == 'LAL' & (position == 'PG' | position == 'SG')]
+```
+```{r}
+ player[(team == 'LAL' | team == 'GSW') & position == 'SF']
+```
+```{r}
+player[salary == max(salary)]
+```
+```{r}
+player[salary == min(salary)]
+```
+
+```{r}
+player[scored == max(scored)]
+```
+
+```{r}
+salary[scored == max(scored)]
+```
+
+```{r}
+max(salary[position=='C'])
+```
+```{r}
+team[player == player[scored==max(scored)]]
+```
+
+```{r}
+player[points3 == max(points3)]
+```
+
+```{r}
+warriors_player <- player[team=='GSW']
+warriors_salary <- salary[team=='GSW']
+warriors_points <- scored[team=='GSW']
+names(warriors_salary) = warriors_player
+warriors_salary[c("Stephen Curry", "Kevin Durant")]
+```
+
+```{r}
+log_scored <- log(scored)
+log_salary <- log(salary)
+plot(log_scored, log_salary)
+text(log_scored, log_salary, labels = abbreviate(player))
+```
+```{r}
+plot(scored, salary)
+text(scored, salary, labels = abbreviate(player))
+```
+```{r}
+salary_millions <- (salary)/1000000
+score_points = (points1) + (points2)*2 + (points3)*3
+position_factor <- factor(position)
+table(position_factor)
+```
+

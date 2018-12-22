@@ -1,0 +1,149 @@
+---
+title: "lab12-mk-larson"
+author: "mklarson"
+date: "November 15, 2018"
+output: html_document
+---
+
+```{r}
+#install.packages("XML")
+#install.packages("xml2")
+#install.packages("rvest")
+#install.packages("magrittr")
+
+```
+
+```{r}
+library(XML)
+library(xml2)
+library(rvest)
+library(magrittr)
+library(stringr)
+```
+
+```{r}
+# Assemble url (so it fits on screen)
+basket <- "https://www.basketball-reference.com"
+gsw <- "/teams/GSW/2017.html"
+gsw_url <- paste0(basket, gsw)
+
+# download HTML file to your working directory
+download.file(gsw_url, 'gsw-roster-2017.html')
+
+# Read GSW Roster html table
+gsw_roster <- readHTMLTable('gsw-roster-2017.html')
+```
+
+```{r}
+read_html("https://www.basketball-reference.com/leagues/NBA_2017.html")
+
+nba_html <- paste0(basket, "/leagues/NBA_2017.html")
+
+xml_doc <- read_html(nba_html)
+xml_text <- xml_doc %>% html_text()
+```
+
+```{r}
+# content of h2 nodes
+xml_doc %>%
+  html_nodes("h2") %>%
+  html_text() 
+```
+
+```{r}
+# content of h1 nodes
+xml_doc %>%
+  html_nodes("h1") %>%
+  html_text() 
+
+# content of strong nodes
+xml_doc %>%
+  html_nodes("strong") %>%
+  html_text() 
+
+# content of button nodes
+xml_doc %>%
+  html_nodes("button") %>%
+  html_text() 
+
+# node with an attribute
+xml_doc %>%
+  html_nodes("p.listhead") %>%
+  html_text()
+
+xml_doc %>%
+  html_nodes(xpath = '//p[@class="listhead"]') %>%
+  html_text()
+
+xml_doc %>%
+  html_nodes(xpath = '//ul[@class=""]//a') %>%
+  html_text()
+```
+
+
+```{r}
+# extracting first table 
+xml_table1 <- xml_doc %>%
+  html_nodes("table") %>%
+  extract(1)
+
+class(xml_table1)
+
+tbl1 <- html_table(xml_table1)
+
+head(tbl1)
+```
+
+```{r}
+# extracting second table 
+xml_table2 <- xml_doc %>%
+  html_nodes("table") %>%
+  extract(2)
+# two html tables
+xml_tables <- xml_doc %>%
+  html_nodes("table") %>%
+  extract(1:2)
+
+xml_tables %>% 
+  html_nodes("a") %>%
+  html_text()
+hrefs <- xml_tables %>% 
+  html_nodes("a") %>%
+  html_attr("href")
+hrefs
+```
+
+```{r}
+teams <- str_sub(hrefs, 8 , 10)
+teams
+files <- paste0(teams, "-roster-20107.csv")
+files
+bos_url <- paste0(basket, hrefs[1])
+bos_url
+xml_bos <- read_html(bos_url)
+
+
+```
+
+```{r}
+bos_table <- xml_bos %>%
+  html_nodes("table") %>%
+  extract(1)
+roster <- html_table(bos_table)
+roster
+write.csv(roster, "BOS-roster-2017.csv")
+
+```
+
+```{r}
+for (i in 1:length(teams)){
+  team_urli <- paste0(basket, hrefs[i])
+  xml_i <- read_html(team_urli)
+  xml_table_i <- xml_i %>%
+  html_nodes("table") %>%
+  extract(1)
+  roster_i <- html_table(xml_table_i)
+  write.csv(roster_i, file = files[i])
+}
+```
+

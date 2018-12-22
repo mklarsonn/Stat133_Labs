@@ -1,0 +1,289 @@
+---
+title: "lab08-mk-larson"
+author: "mklarson"
+date: "October 18, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+vec <- c(3,1,4)
+for (j in 1:3){
+  print(vec[j]*3)
+}
+vec2 <- rep(0, length(vec))
+for (j in 1:3){
+  vec2[j] <- vec[j]*3
+}
+vec2
+
+```
+##Summation Series 1
+```{r} 
+vect <- c(0,1,2,3,4,5)
+vec3 <- rep(0, length(vect))
+for (j in 1:6){
+  
+  vec3[j] <- 1/(2^(vect[j]))
+  
+  
+}
+vec3
+sum(vec3)
+
+vect2 <- c(0,1,2,3,4,5,6,7,8)
+vec4 <- rep(0, length(vect2))
+for (j in 1:9){
+  
+  vec4[j] <- 1/(2^(vect2[j]))
+  
+  
+}
+vec4
+sum(vec4) 
+#the series converses to 2 as n increases
+
+```
+##Summation Series 2
+```{r}
+v1 <- c(0,1,2,3,4,5,6,7,8,9,10,11,12,13,14)
+v2 <- rep(0, length(v1))
+for (j in 1:15){
+  v2[j] <- 1/(9^(v1[j]))
+  
+}
+v2
+sum(v2)
+# I tried this with n = 5, 11, and 14 and from it conclude that the series converges to 1.125
+```
+##Arithmetic Series
+```{r}
+a <- rep(0,length(6))
+a[1] <- 3
+d <- 3
+for (i in 2:7){
+  a[i] <- a[1] + (i-1)*d
+}
+a
+#The series does not converge 
+```
+##The Geometric Series
+```{r}
+b <- rep(0,length(5))
+b[1] <- 3
+r <- 2
+for (i in 2:6){
+  b[i] <- b[1] * r^(i-1)
+  
+}
+b
+sum(b)
+#The series does not converge because, the common ratio is multiplied to each sequential term, and it keeps multiplying/increasing by a constant
+
+```
+##Sine Approximation
+```{r}
+
+
+si <- function(x){
+  s <- rep(0, length(6))
+  s[1] <- x
+  for (i in 1:5){
+    s[i+1] <- ((-1)^i)*(x^(2*i+1))/(factorial(2*i+1))}
+    return(sum(s))
+}
+si(5)
+sin(5)
+
+
+si2 <- function(x){
+  s2 <- rep(0, length(50))
+  s2[1] <- x
+  for (i in 1:49){
+    s2[i+1] <- ((-1)^i)*(x^(2*i+1))/(factorial(2*i+1))}
+    return(sum(s2))
+}
+sin(5)
+si2(5) #si2 is very accurate 
+```
+
+```{r}
+set.seed(123)
+X <- matrix(rnorm(12), nrow = 4, ncol = 3)
+X
+Y <- matrix(NA, nrow = 4, ncol = 3)
+for (i in 1:nrow(X)){
+  for (j in 1:ncol(X)){
+    if (X[i,j] < 0){
+      Y[i,j] <- (X[i,j])^2
+    }
+    else{
+      Y[i,j] <- sqrt(X[i,j])
+    }
+  }
+}
+Y
+```
+
+```{r}
+reduce <- function(x){ 
+
+while (x %% 2 == 0) { 
+  print(x)
+  x <- x / 2
+}
+print(x)
+}
+reduce(4580000)
+```
+
+```{r}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```
+#average using repeat and while loops
+```{r}
+average1 <- seq(from = 1, to = 100, by = 1)
+n <-1
+repeat {
+  sum <- sum(average1[1:n])
+  if (n > 100){
+    break
+  }
+  n <- n + 1
+  avg <- sum/n
+}
+
+while (n < 101){
+  sum2 <- sum(average1[1:n])
+  n2 <-  n2 + 1
+  avg2 <- (sum2)/n2
+  print(avg2)
+}
+
+
+
+
+
+```
+#standard deviation for loop
+```{r}
+standard <- function(v){
+  n <- length(v)
+  avg_v <- mean(v)
+  sum_v <- 0
+  for (i in v) {
+    sum_v <- sum_v + (i-avg_v)^2
+  }
+  return(sqrt(sum_v/(n-1)))
+}
+standard(1:100)
+
+```
+#geometric mean using for loop
+```{r}
+geom_mean_for <- function(v){
+  n <- length(v)
+  mul <- 1
+  for (i in v) {
+    mul <- mul*i
+  }
+  return(mul^(1/n))
+}
+geom_mean_for(1:100)
+
+
+
+
+
+```
+
+#geom mean using while loop
+```{r}
+v <- seq(from = 1, to = 100, by = 1)
+i <- 1
+result <- 1
+while ( i < 100) {
+    result <- result*v[i]
+    i = i + 1
+    }
+result^(1/100)
+```
+#geom mean using repeat loop
+```{r}
+v2 <- seq(from = 1, to = 100, by = 1)
+rez <- 1
+i <- 1
+repeat {
+  if (i > 100) {
+    break
+  }
+  rez = rez * v2[i]
+  i = i + 1
+}
+result^(1/100)
+```
+#Distance Matrix of Letters
+```{r}
+num_letters <- length(LETTERS)
+set.seed(123)
+values <- sample.int(num_letters) 
+distances <- values %*% t(values)
+diag(distances) <- 0
+dimnames(distances) <- list(LETTERS, LETTERS)
+
+distances['A','B']
+
+sum1 <- rep(0, 100)
+get_dist <- function(distances = distances, ltrs) {
+   for (i in ltrs){
+     if (!(ltrs[i] %in% LETTERS)){
+       stop("unrecognized character")
+     }
+     else{
+       val1 <- ltrs[i]
+       val2 <- ltrs[i+1]
+       sum1[i] <- distances[val1:val2]
+      
+     }
+   }
+return (sum1)
+}
+vec <- c('E', 'D', 'A')
+#get_dist(distances, vec)
+cal <- c('C', 'A', 'L')
+stats <- c('S', 'T', 'A', 'T', 'S')
+oski <- c('O', 'S', 'K', 'I')
+zzz <- rep('Z', 3)
+lets <- LETTERS
+first <- c('M', 'K')
+last <- c('L', 'A', 'R', 'S', 'O', 'N')
+```
+
+```{r}
+strings <- list(
+  cal = cal,
+  stats = stats,
+  oski = oski,
+  zzz = zzz,
+  lets = lets,
+  first = first,
+  last = last
+)
+```
+

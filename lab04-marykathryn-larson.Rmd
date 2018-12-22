@@ -1,0 +1,74 @@
+---
+title: "lab04-marykathryn-larson"
+output: html_document
+---
+
+```{r, eval= FALSE}
+git config --global user.name "MK Larson"
+git config --global user.email "marykathrynlarson@berkeley.edu"
+git config --global color.ui "auto"
+cd ~/Desktop
+mkdir planets #creates new directory in Desktop which is called planets
+cd planets
+git init #creates a git repo out of planets
+ls 
+ls -a #lists the contents of the repo
+mkdir moons #which makes a subdirectory in planets called moons 
+cd moons 
+git init #makes the moons subdirectory a repo
+nano mars.txt #creates a new text file 
+cat mars.txt #shows the text within the project 
+git status #shows the status of the project
+git add mars.txt #tells git to track the file 
+git commit -m "Start notes on Mars as a base" #starts recording the changes as a commit 
+git log #show the project history 
+git diff #shows the differences between the current state and the most recently saved version
+git commit -m "Add concerns about the effects of Mars' moons on Wolfman" #commits the changes 
+
+cat mars.txt 
+git diff
+git diff --staged #shows the difference between the last committed change and whats in the stagin area
+git commit -m "Discuss concerns about Mars' climate for Mummmy"
+git diff HEAD ~1 mar.txt #allows you to be see the differences between older commits and chose which one (i.e. ~1 will show one before head)
+git show HEAD~2 mars.txt #shows us the changes we madea t an older commit AND the commit message
+git checkout HEAD mars.txt #if the file has been changed, but now yet had its changes moved to the staging area, we can use this call to put htings back to the way they were
+#git checkout restores an old version of the file 
+mkdir results
+git status
+nano .gitignore 
+cat .gitignore #we create a .gitignore file which allows to ignore certain files we tell it to
+*.dat
+results/ #tells git to ignore any file whose name ends in .dat
+git add .gitignore 
+git commit -m "Ignore data files and the results folder"
+git remote add origin https://github.com/mklarsonn/planets.git 
+git remote -v
+git push origin master #pushes the changes from the local repo to the GitHub Repo
+
+cat README.md #allowed me to edit my repo
+git add README.md
+git commit -m "add name"
+git status
+git push origin master
+
+```
+
+```{r, eval= FALSE}
+cd Documents
+ls
+cd stat133
+mkdir demo-repo
+git init # sets up my directory as a Git repo (basically a local repository )
+echo "# Demo Repo" >> README.md #adds a readme file and tells a bit about what its about
+git status #checks teh changes
+git add README.md #saves the change in the local repo
+git status 
+git commit -m "first commit"
+git remote add origin https://github.com/mklarsonn/demo-repo.git
+# added a remote repository
+git remote -v #verified our remote
+git push origin master
+
+
+```
+

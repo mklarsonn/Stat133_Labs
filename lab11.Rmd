@@ -1,0 +1,79 @@
+---
+title: "lab11-mk-larson"
+author: "mklarson"
+date: "November 8, 2018"
+output: html_document
+---
+
+```{r}
+bag1 <- c('white', 'white', 'red')
+bag2 <- c(rep('white', 3), 'red')
+bags <- c('bag1', 'bag2')
+repetitions <- 1000
+drawn_balls <- character(repetitions)
+set.seed(345)
+for (i in 1:repetitions) {
+  # select one bag
+  chosen_bag <- sample(bags, 1)
+  
+  # draw a ball from chosen bag
+  if (chosen_bag == 'bag1') {
+    drawn_balls[i] <- sample(bag1, 1)
+  } else {
+    drawn_balls[i] <- sample(bag2, 1)
+  }
+}
+table(drawn_balls) / repetitions
+```
+
+```{r}
+#creating the matrix drawn balls.
+#each row reprsents a sample 
+box1 <- c('blue', 'blue', 'red')
+box2 <- c('blue', 'blue', 'red', 'red', 'red', 'white')
+drawn_balls <- matrix(NA, nrow= 1000, ncol = 4)
+
+for (i in 1:nrow(drawn_balls)){
+  if (runif(1) > 0.5) {
+  drawn_balls[i,] <- sample(box1, size = 4, replace = TRUE)
+}
+else {
+  drawn_balls[i,] <- sample(box2, size = 4, replace = FALSE)
+}
+}
+
+
+
+```
+
+```{r}
+freqs <- c()
+for (i in 1:nrow(drawn_balls)){
+  freqs[i] <- sum(drawn_balls[i,] == 'blue')
+}
+freqs
+num_blue_balls <- table(freqs)
+
+```
+
+
+
+
+```{r}
+vec <- vector(mode = 'list', length = 5)
+for (i in 0:4){
+vec[[i+1]] <- cumsum(freqs == i)/(1:1000) 
+}
+
+```
+
+```{r}
+plot(x = 1:1000, y = vec[[1]], xlab= 'repititions', ylab= 'freqs', type = 'l', col = 'red')
+lines(x = 1:1000, y = vec[[2]], type = 'l', col = 'chartreuse4')
+lines(x = 1:1000, y = vec[[3]], type = 'l', col = 'springgreen')
+lines(x = 1:1000, y = vec[[4]], type = 'l', col = 'turquoise3')
+lines(x = 1:1000, y = vec[[5]], type = 'l', col = 'violetred')
+title(main = 'Relative Frequencies of Number of Blue Balls')
+legend("topright", legend=c("0", "1", "2", "3", "4"), col=c("red", "chartreuse4", "springgreen", "turquoise", "violetred"), pch = 1, cex= 0.4)
+```
+

@@ -1,0 +1,172 @@
+---
+title: "lab10-mk-larson"
+author: "mklarson"
+date: "October 31, 2018"
+output: html_document
+---
+
+
+
+
+```{r}
+library(dplyr)
+library(stringr)
+library(plotly)
+
+```
+```{r}
+github <- "https://raw.githubusercontent.com/ucb-stat133/stat133-fall-2018/master/"
+datafile <- "data/mobile-food-sf.csv"
+download.file(paste0(github, datafile), destfile = "mobile-food-sf.csv")
+```
+
+```{r}
+dat <- read.csv('mobile-food-sf.csv', stringsAsFactors = FALSE)
+day_freqs <- table(dat$DayOfWeekStr)
+
+barplot(day_freqs, border = NA, las = 3)
+```
+
+```{r}
+plot_ly(x = names(day_freqs), 
+  y = day_freqs,
+  type = 'bar')
+```
+
+```{r}
+day_counts <- dat %>% 
+  select(DayOfWeekStr) %>%
+  group_by(DayOfWeekStr) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+plot_ly(day_counts, 
+        x = ~reorder(DayOfWeekStr, count), 
+        y = ~count,
+        type = 'bar')
+```
+
+```{r}
+time1 <- '10AM'
+hour <- str_sub(time1, start = 1, end = 2)
+period <- str_sub(time1, start = 3, end = 4)
+times <- c('12PM', '10PM', '9AM', '8AM', '2PM')
+period2 <- str_sub(times, start = -2)
+hour2 <- str_sub(times, end = -3)
+hour2
+
+```
+
+```{r}
+hours <- str_replace(times, pattern = 'AM|PM', replacement = '')
+hours
+periods <-  str_sub(times, start = -2)
+dat2 <- data.frame(hours, periods)
+hour_counts <- dat2 %>%
+  select(hours) %>%
+  group_by(hours) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+plot_ly(hour_counts, 
+        x = ~reorder(hours, count), 
+        y = ~count,
+        type = 'bar')
+
+```
+
+```{r}
+period1 <- str_sub(dat$starttime, start = -2)
+period_mul <- replace(period1, period1=="AM", 1)
+period_mul <- replace(period_mul, period_mul=="PM", 2)
+period_mul <- as.numeric(period_mul)
+period_mul
+time_hour1 <- str_replace(dat$starttime, pattern = 'AM|PM', replacement = '')
+time_hour1 <- as.numeric(time_hour1)
+dat$start <- time_hour1 * period_mul
+dat$start
+```
+
+```{r}
+period2 <- str_sub(dat$endtime, start = -2)
+period_mul2 <- replace(period2, period2=="AM", 1)
+period_mul2 <- replace(period_mul2, period_mul2=="PM", 2)
+period_mul2 <- as.numeric(period_mul2)
+period_mul2
+time_hour2 <- str_replace(dat$endtime, pattern = 'AM|PM', replacement = '')
+time_hour2
+time_hour2 <- as.numeric(time_hour2)
+dat$end <- time_hour2 * period_mul2
+dat$end
+
+```
+
+```{r}
+dat$duration <- dat$end - dat$start
+
+```
+
+```{r}
+lat_lon <- str_replace_all(dat$Location, pattern = '\\(|\\)', replacement = '')
+lat_lon <- str_split(lat_lon, pattern = ',')
+lat <- lapply(lat_lon, function(x) x[1])
+lon <- lapply(lat_lon, function(x) x[2])
+dat$lat <- as.numeric(unlist(lat))
+dat$lon <- as.numeric(unlist(lon))
+```
+
+```{r}
+plot_ly(data = dat, x = ~lon, y = ~lat, type = 'scatter', mode = 'markers')
+```
+
+```{r}
+library(RgoogleMaps)
+# coordinates for center of the map
+center <- c(mean(dat$lat, na.rm = TRUE), mean(dat$lon, na.rm = TRUE))
+
+# zoom value
+zoom <- min(MaxZoom(range(dat$lat, na.rm = TRUE), 
+                    range(dat$lon, na.rm = TRUE)))
+
+# san francisco map
+map1 <- GetMap(center=center, zoom=zoom, destfile = "san-francisco.png")
+PlotOnStaticMap(map1, dat$lat, dat$lon, col = "#ed4964", pch=20)
+```
+
+```{r}
+library(ggmap)
+```
+
+```{r}
+dat <- na.omit(dat)
+sbbox <- make_bbox(lon = dat$lon, lat = dat$lat, f = .1)
+sbbox
+sf_map <- get_map(location = sbbox, maptype = "terrain", source = "google")
+ggmap(sf_map) + geom_point(data = dat, mapping = aes(x = lon, y = lat), color = "red", alpha = 0.2, size = 1)
+```
+
+```{r}
+dat$burrit <- str_detect(dat$optionaltext, pattern = "Burritos|burritos")
+burritos <- subset(dat, dat$burrit==TRUE)
+dat$taco <- str_detect(dat$optionaltext, pattern = "Tacos|tacos")
+tacos <- subset(dat, dat$taco==TRUE)
+dat$quesadilla <- str_detect(dat$optionaltext, pattern = "Quesadillas|quesadillas")
+quesadillas <- subset(dat, dat$quesadilla==TRUE)
+burritos$type <- "Burrito"
+tacos$type <- "Taco"
+quesadillas$type <- "Quesadilla"
+
+```
+
+```{r, eval = FALSE}
+food <- rbind(tacos, burritos, quesadillas) 
+type_counts <- food %>% 
+  select(type) %>%
+  group_by(type) %>%
+  summarise(count = n()) %>%
+  arrange(desc(count))
+
+
+
+count_facets <- ggplot(type_counts, aes(x = type, y = count)) + facet_wrap(~type)
+```
+
